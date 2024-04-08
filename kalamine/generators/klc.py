@@ -105,6 +105,10 @@ def klc_virtual_key(
     elif base == "\x1b" and check("ESCAPE"):
         return "ESCAPE"
     else:
+        # Try to reuse VK with same symbols
+        for vk, symbolsʹ in virtual_keys.items():
+            if symbols == symbolsʹ:
+                return vk
         MAX_OEM = 8
         # We affect abitrary OEM VK and it will not match the one
         # in distributed layout. It can cause issue if a application
@@ -112,7 +116,7 @@ def klc_virtual_key(
         global oem_idx
         oem_idx += 1
         if oem_idx <= MAX_OEM:
-            return "OEM_" + str(oem_idx)
+            return f"OEM_{oem_idx}"
         else:
             raise Exception("Too many OEM keys")
 
