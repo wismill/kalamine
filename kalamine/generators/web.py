@@ -16,6 +16,11 @@ from ..key import KEYS
 from ..utils import ODK_ID, Layer, pretty_upper_key
 
 
+GEOMETRIES_SUBSTITUTIONS = {
+    "TYPEMATRIX": "ERGO"
+}
+
+
 def raw_json(layout: "KeyboardLayout") -> Dict:
     """JSON layout descriptor"""
 
@@ -37,7 +42,7 @@ def raw_json(layout: "KeyboardLayout") -> Dict:
         # fmt: off
         "name":        layout.meta["name"],
         "description": layout.meta["description"],
-        "geometry":    layout.meta["geometry"].lower(),
+        "geometry":    GEOMETRIES_SUBSTITUTIONS.get(layout.meta["geometry"], layout.meta["geometry"]).lower(),
         "keymap":      keymap,
         "deadkeys":    layout.dead_keys,
         "altgr":       layout.has_altgr,
