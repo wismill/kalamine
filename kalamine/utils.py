@@ -52,22 +52,26 @@ class Layer(IntEnum):
     ALTGR_SHIFT = 5
 
     @classmethod
-    def parse(cls, raw: str) -> Self | None:
-        match raw.casefold():
-            case "1dk":
-                return cls(cls.ODK)
-            case "1dk_shift":
-                return cls(cls.ODK_SHIFT)
-            case _:
-                for l in cls:
-                    if raw.casefold() == l.name.casefold():
+    def parse(cls, raw: str) -> Optional["Layer"]:
+        rawʹ = raw.casefold()
+        # Parse alternate names
+        if rawʹ == "1dk":
+            return cls(cls.ODK)
+        elif rawʹ == "1dk_shift":
+            return cls(cls.ODK_SHIFT)
+        # Parse native values
+        else:
+            for l in cls:
+                # Parse native names
+                if raw.casefold() == l.name.casefold():
+                    return l
+                # Parse numeric values
+                try:
+                    if int(raw, base=10) == l.value:
                         return l
-                    try:
-                        if int(raw, base=10) == l.value:
-                            return l
-                    except:
-                        pass
-                return None
+                except ValueError:
+                    pass
+            return None
 
     def next(self) -> "Layer":
         """The next layer in the layer ordering."""
@@ -101,7 +105,7 @@ def upper_key(letter: Optional[str]) -> Optional[str]:
         "\u2192": "\u21d2",  # → ⇒
         "\u2193": "\u21d3",  # ↓ ⇓
         # FIXME: strange behavior
-        "\u00b5": None,      # µ (to avoid getting `Μ` as uppercase)
+        "\u00b5": None,  # µ (to avoid getting `Μ` as uppercase)
     }
     if letter in custom_alpha:
         return custom_alpha[letter]
@@ -152,6 +156,7 @@ for dk in DEAD_KEYS:
 
 ODK_ID = "**"  # must match the value in dead_keys.yaml
 
+
 @unique
 class SystemSymbol(Enum):
     Alt = "⎇"
@@ -185,15 +190,17 @@ class SystemSymbol(Enum):
                 return s
         else:
             return None
-        
+
     @classmethod
     def is_system_symbol(cls, raw: str) -> bool:
         return cls.parse(raw) is not None
+
 
 @dataclass
 class SpecialSymbolEntry:
     value: str
     pretty: str
+
 
 class SpecialSymbol(Enum):
     NarrowNoBreakSpace = SpecialSymbolEntry("\u202F", "n⍽")

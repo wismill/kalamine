@@ -70,27 +70,35 @@ class Key:
     windows: Optional[str] = None
     macos: Optional[str] = None
     hand: Optional[Hand] = None
-    category: KeyCategory = KeyCategory.Miscellaneous
     "Usual hand on standard (ISO, etc.) keyboard"
+    category: KeyCategory = KeyCategory.Miscellaneous
 
     @classmethod
-    def load_data(cls, data: Dict[str, Any]) -> Dict[str, Self]:
-        return {
-            key.xkb: key
-            for category, keys in data.items()
-            for key in (cls.parse(category=category, **entry) for entry in keys)
-        }
-
-    @classmethod
-    def parse(cls, category: str, xkb: str, web: Optional[str], windows: Optional[str], macos: Optional[str], hand: Optional[str]) -> Self:
+    def parse(
+        cls,
+        category: str,
+        xkb: str,
+        web: Optional[str],
+        windows: Optional[str],
+        macos: Optional[str],
+        hand: Optional[str],
+    ) -> "Key":
         return cls(
             category=KeyCategory.parse(category),
             xkb=xkb,
             web=web,
             windows=windows,
             macos=macos,
-            hand=Hand.parse(hand) if hand else None
+            hand=Hand.parse(hand) if hand else None,
         )
+
+    @classmethod
+    def parse_keys(cls, data: Dict[str, Any]) -> Dict[str, "Key"]:
+        return {
+            key.xkb: key
+            for category, keys in data.items()
+            for key in (cls.parse(category=category, **entry) for entry in keys)
+        }
 
     @property
     def id(self) -> str:
@@ -100,4 +108,5 @@ class Key:
     def alphanum(self) -> bool:
         return bool(self.category & KeyCategory.AlphaNum)
 
-KEYS = Key.load_data(load_data("scan_codes"))
+
+KEYS = Key.parse_keys(load_data("scan_codes"))
