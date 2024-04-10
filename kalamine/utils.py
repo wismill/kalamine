@@ -61,14 +61,14 @@ class Layer(IntEnum):
             return cls(cls.ODK_SHIFT)
         # Parse native values
         else:
-            for l in cls:
+            for layer in cls:
                 # Parse native names
-                if raw.casefold() == l.name.casefold():
-                    return l
+                if raw.casefold() == layer.name.casefold():
+                    return layer
                 # Parse numeric values
                 try:
-                    if int(raw, base=10) == l.value:
-                        return l
+                    if int(raw, base=10) == layer.value:
+                        return layer
                 except ValueError:
                     pass
             return None
