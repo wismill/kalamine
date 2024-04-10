@@ -138,14 +138,14 @@ def test_intl_keymap():
 
     # Extra mapping section
     extraMapping = {
-        # Redefine level of previously mapped key
+        # Redefine level of key previously defined in ASCII art
         "ae01": {"shift": "?"},
         # TODO
-        # Test case variants and ODK alias
+        # Test layer case variants and ODK alias
         # "kppt": {"base": ",", "sHiFt": ";", "1dk": ".", "ODk_shiFt": ":"},
-        # Clone level of another key
+        # Clone level of another key previously defined in ASCII art
         "esc": {"base": "\x1b", "shift": "(ae11)"},
-        # Clone whole key
+        # Clone whole key previously defined
         "henk": "(lsgt)",
     }
 
